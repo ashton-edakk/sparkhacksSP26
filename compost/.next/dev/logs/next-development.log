@@ -1,0 +1,32 @@
+[00:01:55.516] Server  ERROR   Error: Cannot find module 'next/dist/compiled/cookie'
+Require stack:
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/api-utils/get-cookie-parser.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/prepare-destination.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/middleware-route-matcher.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-utils/filesystem.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-server.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/start-server.js
+[00:01:55.536] Server  ERROR   Error: Cannot find module 'next/dist/compiled/cookie'
+Require stack:
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/api-utils/get-cookie-parser.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/prepare-destination.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/middleware-route-matcher.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-utils/filesystem.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-server.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/start-server.js
+[00:01:55.588] Server  ERROR   Error: Cannot find module 'next/dist/compiled/cookie'
+Require stack:
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/api-utils/get-cookie-parser.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/prepare-destination.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/middleware-route-matcher.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-utils/filesystem.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-server.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/start-server.js
+[00:01:55.597] Server  ERROR   Error: Cannot find module 'next/dist/compiled/cookie'
+Require stack:
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/api-utils/get-cookie-parser.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/prepare-destination.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/shared/lib/router/utils/middleware-route-matcher.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-utils/filesystem.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/router-server.js
+- /Users/lena/Desktop/test/compost/node_modules/next/dist/server/lib/start-server.js

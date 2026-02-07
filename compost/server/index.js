@@ -16,10 +16,37 @@ app.post("/api/search", async (req, res) => {
       return res.status(400).json({ error: "Query is required" });
     }
 
-    console.log(`Searching for: "${query}"`);
+    // Detect non-academic queries and flag for nudge
+    const nonAcademic = [
+      // Gaming
+      "minecraft", "fortnite", "roblox", "valorant", "league of legends",
+      "apex legends", "gta", "call of duty", "cod", "overwatch", "zelda",
+      "mario", "pokemon", "elden ring", "smash bros", "fifa", "madden",
+      "nba 2k", "among us", "lethal company", "baldurs gate", "skyrim",
+      "gaming", "gameplay", "speedrun", "walkthrough", "playthrough",
+      // Social media & streaming
+      "tiktok", "instagram", "snapchat", "twitter", "twitch", "streamer",
+      "youtube drama", "influencer", "viral", "trending", "challenge",
+      // Entertainment
+      "movie", "trailer", "netflix", "hulu", "disney plus", "anime",
+      "manga", "kpop", "k-pop", "celebrity", "gossip", "drama",
+      "reality tv", "bachelor", "love island",
+      // Music
+      "music", "song", "lyrics", "album", "concert", "playlist",
+      "rapper", "drake", "taylor swift", "kendrick",
+      // Other non-academic
+      "vlog", "mukbang", "asmr", "prank", "unboxing", "haul",
+      "meme", "funny", "compilation", "react", "reaction","sushi",
+    ];
+    const lower = query.toLowerCase();
+    const isOffTopic = nonAcademic.some((word) => lower.includes(word));
+
+    // Nudge YouTube toward educational results
+    const educationalQuery = `${query} explained tutorial`;
+    console.log(`Searching for: "${educationalQuery}"`);
 
     // 1. Search YouTube
-    const videos = await searchVideos(query, 15);
+    const videos = await searchVideos(educationalQuery, 15);
     console.log(`Found ${videos.length} videos`);
 
     // 2. Fetch transcripts and analyze (in parallel)
@@ -46,7 +73,7 @@ app.post("/api/search", async (req, res) => {
     const results = scored.slice(0, 12);
     console.log(`Returning ${results.length} ranked results`);
 
-    res.json({ results, query });
+    res.json({ results, query, nudge: isOffTopic });
   } catch (err) {
     console.error("Search error:", err.message);
     res.status(500).json({ error: "Search failed. Check your API key and try again." });

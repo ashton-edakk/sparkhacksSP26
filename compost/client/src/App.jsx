@@ -80,13 +80,12 @@ export default function App() {
             <div className="relative flex items-center justify-between h-16">
               
               {/* LEFT: ComPost Logo */}
-              <div className="flex-shrink-0 flex items-center gap-2 cursor-pointer z-10">
-                <div className="w-8 h-8 bg-gradient-to-br from-emerald-400 to-cyan-500 rounded-lg flex items-center justify-center shadow-lg shadow-emerald-500/20">
-                  <BookOpen className="w-5 h-5 text-white" />
-                </div>
-                <span className="text-xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-white to-slate-200">
-                  ComPost
-                </span>
+              <div className="flex-shrink-0 flex items-center z-10">
+                <img 
+                  src="/logo.png" 
+                  alt="ComPost" 
+                  className="h-10 w-auto"
+                />
               </div>
 
               {/* RIGHT: View Toggle and Info Button */}

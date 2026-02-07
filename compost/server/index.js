@@ -9,6 +9,37 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
+function getSentiment(videoId) {
+  return new Promise((resolve, reject) => {
+    const py = spawn("python", ["sentiment.py", videoId]);
+
+    let data = "";
+    let err = "";
+
+    py.stdout.on("data", (chunk) => {
+      data += chunk.toString();
+    });
+
+    py.stderr.on("data", (chunk) => {
+      err += chunk.toString();
+    });
+
+    py.on("close", (code) => {
+      if (code !== 0) {
+        reject(err);
+        return;
+      }
+
+      try {
+        resolve(JSON.parse(data));
+      } catch (e) {
+        reject(e);
+      }
+    });
+  });
+}
+
+
 app.post("/api/search", async (req, res) => {
   try {
     const { query } = req.body;

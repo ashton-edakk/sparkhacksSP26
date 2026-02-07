@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { Search, BookOpen, ArrowRight } from 'lucide-react';
+import { Search, BookOpen, ArrowRight, Grid3x3, ListVideo } from 'lucide-react';
 import { HoleBackground } from './HoleBackground';
 import VideoViewer from './components/VideoViewer';
+import VideoGrid from './components/VideoGrid';
 
 const NUDGE_MESSAGES = [
   "Hey, shouldn't you be studying? Try searching something academic!",
@@ -19,6 +20,7 @@ export default function App() {
   const [nudge, setNudge] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [viewMode, setViewMode] = useState('single'); // 'single' or 'grid'
 
   async function handleSearch(e) {
     e.preventDefault();
@@ -87,13 +89,29 @@ export default function App() {
                 </span>
               </div>
 
-              {/* RIGHT: Info Button */}
-              <button 
-                onClick={() => setShowInfo(true)}
-                className="text-sm text-slate-400 hover:text-emerald-400 transition-colors px-4 py-2 rounded-lg hover:bg-white/5"
-              >
-                How are videos ranked?
-              </button>
+              {/* RIGHT: View Toggle and Info Button */}
+              <div className="flex items-center gap-2">
+                {hasResults && (
+                  <button
+                    onClick={() => setViewMode(viewMode === 'single' ? 'grid' : 'single')}
+                    className="p-2 rounded-lg bg-black/40 backdrop-blur-md border border-white/10 hover:bg-black/60 hover:border-white/20 transition-all group"
+                    aria-label={`Switch to ${viewMode === 'single' ? 'grid' : 'single'} view`}
+                    title={`Switch to ${viewMode === 'single' ? 'grid' : 'single'} view`}
+                  >
+                    {viewMode === 'single' ? (
+                      <Grid3x3 className="w-5 h-5 text-slate-300 group-hover:text-emerald-400 transition-colors" />
+                    ) : (
+                      <ListVideo className="w-5 h-5 text-slate-300 group-hover:text-emerald-400 transition-colors" />
+                    )}
+                  </button>
+                )}
+                <button 
+                  onClick={() => setShowInfo(true)}
+                  className="text-sm text-slate-400 hover:text-emerald-400 transition-colors px-4 py-2 rounded-lg hover:bg-white/5"
+                >
+                  How are videos ranked?
+                </button>
+              </div>
 
             </div>
           </div>
@@ -216,10 +234,18 @@ export default function App() {
               </div>
             )}
 
-            {/* Video Viewer Container */}
-            <div className="flex-1 overflow-hidden px-4 sm:px-6 lg:px-8 pb-8">
-              <VideoViewer videos={results} />
-            </div>
+            {/* Video Container - Grid or Single View */}
+            {viewMode === 'single' ? (
+              <div className="flex-1 overflow-hidden px-4 sm:px-6 lg:px-8 pb-8">
+                <VideoViewer videos={results} />
+              </div>
+            ) : (
+              <div className="flex-1 overflow-y-auto px-4 sm:px-6 lg:px-8 pb-8">
+                <div className="max-w-7xl mx-auto">
+                  <VideoGrid videos={results} />
+                </div>
+              </div>
+            )}
           </main>
         )}
       </div>

@@ -65,8 +65,11 @@ app.post("/api/search", async (req, res) => {
       })
     );
 
-    // 3. Score and rank
-    const scored = scoreVideos(enriched);
+    // 3. Filter out videos over 250K views
+    const filtered = enriched.filter((v) => v.viewCount < 250000);
+
+    // 4. Score and rank
+    const scored = scoreVideos(filtered);
     scored.sort((a, b) => b.scores.total - a.scores.total);
 
     // Return top 12

@@ -82,7 +82,7 @@ export default function App() {
               {/* LEFT: ComPost Logo */}
               <div className="flex-shrink-0 flex items-center z-10">
                 <img 
-                  src="/logo.png" 
+                  src="/compostlogoclear.png" 
                   alt="ComPost" 
                   className="h-10 w-auto"
                 />

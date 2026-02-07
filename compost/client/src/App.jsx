@@ -84,7 +84,7 @@ export default function App() {
                 <img 
                   src="/compostlogoclear.png" 
                   alt="ComPost" 
-                  className="h-10 w-auto"
+                  className="h-20 w-auto"
                 />
               </div>
 

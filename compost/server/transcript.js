@@ -56,34 +56,92 @@ function analyzeTranscriptQuality(segments) {
 function findBestTimestamp(segments, query) {
   if (!segments || segments.length === 0) return 0;
 
-  const queryWords = query.toLowerCase().split(/\s+/).filter((w) => w.length > 2);
+  // Remove common stop words but keep important terms
+  const stopWords = new Set([
+    "the", "a", "an", "and", "or", "but", "in", "on", "at", "to", "for", 
+    "of", "with", "by", "from", "as", "is", "was", "are", "were", "be", 
+    "been", "being", "have", "has", "had", "do", "does", "did", "will", 
+    "would", "could", "should", "may", "might", "must", "can", "this", 
+    "that", "these", "those", "i", "you", "he", "she", "it", "we", "they",
+    "what", "which", "who", "when", "where", "why", "how", "all", "each",
+    "every", "both", "few", "more", "most", "other", "some", "such", "no",
+    "nor", "not", "only", "own", "same", "so", "than", "too", "very"
+  ]);
 
-  // Score each window of ~5 consecutive segments
-  const windowSize = 5;
+  // Extract meaningful query words (remove stop words, keep words 2+ chars)
+  const queryWords = query
+    .toLowerCase()
+    .split(/\s+/)
+    .filter((w) => w.length >= 2 && !stopWords.has(w))
+    .map((w) => w.replace(/[^\w]/g, "")) // Remove punctuation
+    .filter((w) => w.length >= 2);
+
+  if (queryWords.length === 0) {
+    // If all words are stop words, use the original query words
+    const fallbackWords = query.toLowerCase().split(/\s+/).filter((w) => w.length >= 2);
+    if (fallbackWords.length === 0) return 0;
+    queryWords.push(...fallbackWords);
+  }
+
+  // Use a larger window (10 segments ~= 30-60 seconds) for better context
+  const windowSize = 10;
   let bestScore = -1;
   let bestOffset = 0;
+  let bestWindowIndex = 0;
 
+  // Score each window
   for (let i = 0; i <= segments.length - windowSize; i++) {
-    const windowText = segments
-      .slice(i, i + windowSize)
-      .map((s) => s.text)
-      .join(" ")
-      .toLowerCase();
+    const window = segments.slice(i, i + windowSize);
+    const windowText = window.map((s) => s.text).join(" ").toLowerCase();
 
     let score = 0;
+    let matchedWords = 0;
+
+    // Score based on:
+    // 1. Number of unique query words found
+    // 2. Frequency of matches (weighted)
+    // 3. Proximity bonus (words appearing close together)
     for (const word of queryWords) {
-      const regex = new RegExp(`\\b${word}\\b`, "gi");
+      const regex = new RegExp(`\\b${word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`, "gi");
       const matches = windowText.match(regex);
-      if (matches) score += matches.length;
+      if (matches) {
+        matchedWords++;
+        // Weight by frequency, but with diminishing returns
+        score += Math.min(matches.length * 2, 10);
+      }
     }
 
-    if (score > bestScore) {
+    // Bonus for matching multiple unique words
+    const uniqueMatchBonus = (matchedWords / queryWords.length) * 20;
+    score += uniqueMatchBonus;
+
+    // Prefer earlier timestamps if scores are similar (within 10%)
+    if (score > bestScore || (score >= bestScore * 0.9 && segments[i].offset < bestOffset)) {
       bestScore = score;
       bestOffset = segments[i].offset;
+      bestWindowIndex = i;
     }
   }
 
-  return bestOffset;
+  // If we found a good match, return it
+  if (bestScore > 0) {
+    // Add a small buffer (2 seconds) to avoid cutting off mid-sentence
+    return Math.max(0, bestOffset - 2);
+  }
+
+  // Fallback: if no good match, try to find any mention of query words
+  // and return the first occurrence
+  for (let i = 0; i < segments.length; i++) {
+    const segmentText = segments[i].text.toLowerCase();
+    for (const word of queryWords) {
+      if (segmentText.includes(word)) {
+        return Math.max(0, segments[i].offset - 2);
+      }
+    }
+  }
+
+  // Last resort: return 0 (start of video)
+  return 0;
 }
 
 module.exports = { fetchTranscript, analyzeTranscriptQuality, findBestTimestamp };

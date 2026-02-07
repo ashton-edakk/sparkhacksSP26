@@ -56,6 +56,13 @@ app.post("/api/search", async (req, res) => {
         const { qualityScore } = analyzeTranscriptQuality(transcript);
         const bestTimestamp = findBestTimestamp(transcript, query);
 
+        // Log timestamp for debugging
+        if (bestTimestamp > 0) {
+          const minutes = Math.floor(bestTimestamp / 60);
+          const seconds = bestTimestamp % 60;
+          console.log(`Video "${video.title.substring(0, 50)}": Found timestamp at ${minutes}:${String(seconds).padStart(2, '0')} for query "${query}"`);
+        }
+
         return {
           ...video,
           transcriptQuality: qualityScore,

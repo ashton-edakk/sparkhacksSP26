@@ -10,10 +10,25 @@ function formatTimestamp(seconds) {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-export default function VideoCard({ video }) {
-  const embedUrl = `https://www.youtube.com/embed/${video.id}?start=${video.startAt || 0}&rel=0`;
-  const youtubeUrl = video.startAt
-    ? `https://www.youtube.com/watch?v=${video.id}&t=${video.startAt}s`
+export default function VideoCard({ video, autoplay = false }) {
+  const startAt = video.startAt || 0;
+  
+  // Debug: log the timestamp being used
+  if (startAt > 0) {
+    console.log(`Video ${video.id}: Using timestamp ${startAt}s (${Math.floor(startAt / 60)}:${String(startAt % 60).padStart(2, '0')})`);
+  }
+  
+  // Build YouTube embed URL with proper parameters
+  // Note: YouTube requires 'mute=1' for autoplay to work in most browsers
+  const params = new URLSearchParams({
+    start: startAt.toString(),
+    rel: '0',
+    ...(autoplay && { autoplay: '1', mute: '1' }), // Mute required for autoplay
+  });
+  
+  const embedUrl = `https://www.youtube.com/embed/${video.id}?${params.toString()}`;
+  const youtubeUrl = startAt > 0
+    ? `https://www.youtube.com/watch?v=${video.id}&t=${startAt}s`
     : `https://www.youtube.com/watch?v=${video.id}`;
 
   return (
